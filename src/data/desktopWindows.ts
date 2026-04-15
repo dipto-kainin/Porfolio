@@ -52,6 +52,20 @@ export const desktopWindows: DesktopWindow[] = [
     previewFrameUrl: 'https://fin-flow-dashboard-nine.vercel.app/',
   },
   {
+    id: 'super-tic-tac-toe',
+    kind: 'project',
+    title: 'Super Tic Tac Toe',
+    icon: '⭕',
+    summary:
+      'A browser-based Super Tic Tac Toe game embedded directly into the portfolio as a live web view.',
+    details:
+      'Live Vercel deployment of Super Tic Tac Toe Arena, added as an in-desktop app so visitors can launch the game preview inside the portfolio window and jump to the source code from the title bar.',
+    stack: ['Web Game', 'SPA', 'Vercel'],
+    repoLink: 'https://github.com/dipto-kainin/super-tic-tac-toe',
+    projectLink: 'https://super-tic-tac-toe-chi-topaz.vercel.app/',
+    previewFrameUrl: 'https://super-tic-tac-toe-chi-topaz.vercel.app/',
+  },
+  {
     id: 'contact',
     kind: 'contact',
     title: 'Contact',
@@ -69,5 +83,6 @@ export const initialPositions: Record<string, WindowPosition> = {
   'kai-framework': { x: 280, y: 126 },
   'league-of-coders': { x: 220, y: 174 },
   'finflow-dashboard': { x: 360, y: 106 },
+  'super-tic-tac-toe': { x: 410, y: 164 },
   contact: { x: 360, y: 106 },
 };
