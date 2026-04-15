@@ -1,0 +1,801 @@
+:root {
+  --desktop-blue: #0078d7;
+  --desktop-blue-deep: #0058a4;
+  --taskbar: rgba(12, 16, 28, 0.9);
+  --window-bg: rgba(246, 250, 255, 0.96);
+  --window-border: rgba(20, 52, 92, 0.36);
+  --window-shadow: rgba(8, 20, 42, 0.42);
+  --text-main: #10253f;
+  --text-soft: #3e5679;
+  --tile: rgba(0, 120, 215, 0.86);
+  --tile-alt: rgba(0, 152, 216, 0.88);
+}
+
+.desktop-shell {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 174, 94, 0.28), transparent 22%),
+    radial-gradient(circle at 88% 22%, rgba(102, 217, 255, 0.32), transparent 24%),
+    linear-gradient(145deg, #063a70 0%, #0a4f8e 38%, #086cb5 68%, #21a2d6 100%);
+}
+
+.desktop-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.14),
+      transparent 24%,
+      transparent 76%,
+      rgba(255, 255, 255, 0.14)
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 32%, rgba(0, 0, 0, 0.18));
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.desktop-brand {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  z-index: 30;
+  color: #e9f5ff;
+  text-align: right;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+  text-shadow: 0 2px 10px rgba(2, 16, 40, 0.42);
+}
+
+.desktop-brand h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.75rem);
+  letter-spacing: 0.06em;
+}
+
+.desktop-brand p {
+  margin: 4px 0 0;
+  opacity: 0.84;
+  font-size: 0.88rem;
+}
+
+.desktop-icons {
+  position: absolute;
+  top: 24px;
+  left: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(86px, 1fr));
+  gap: 14px;
+  width: 220px;
+  z-index: 40;
+}
+
+.desktop-icon {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  border: 0;
+  color: #f4f8ff;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+  font-size: 0.82rem;
+  background: transparent;
+  border-radius: 6px;
+  padding: 10px 6px;
+  text-shadow: 0 1px 6px rgba(4, 15, 35, 0.66);
+}
+
+.desktop-icon:hover,
+.desktop-icon:focus-visible {
+  background: rgba(220, 238, 255, 0.2);
+  outline: none;
+}
+
+.desktop-icon-glyph {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 10px 16px rgba(2, 13, 32, 0.24);
+}
+
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, calc(100vw - 24px));
+  min-height: 280px;
+  border: 1px solid var(--window-border);
+  background: var(--window-bg);
+  box-shadow: 0 24px 40px var(--window-shadow);
+  color: var(--text-main);
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+  animation: window-pop 220ms ease;
+  transition:
+    left 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    top 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 240ms ease,
+    border-radius 240ms ease;
+  will-change: left, top, width, height;
+}
+
+.window-active {
+  border-color: rgba(5, 70, 142, 0.56);
+  box-shadow:
+    0 0 0 2px rgba(0, 120, 215, 0.26),
+    0 24px 46px var(--window-shadow);
+}
+
+.window-maximized {
+  left: 0 !important;
+  top: 0 !important;
+  right: 0;
+  width: 100vw;
+  min-height: 0;
+  height: calc(100vh - 50px);
+  border-radius: 0;
+  box-shadow: 0 0 0 1px rgba(6, 44, 86, 0.28);
+}
+
+.window-maximized .window-titlebar {
+  cursor: default;
+}
+
+.window-titlebar {
+  height: 38px;
+  background: linear-gradient(180deg, #fcfeff 0%, #d7e8f7 100%);
+  border-bottom: 1px solid rgba(16, 61, 111, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+  user-select: none;
+}
+
+.window-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 10px;
+  font-size: 0.88rem;
+}
+
+.window-title-links {
+  margin-left: 8px;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.window-title-links a {
+  text-decoration: none;
+  border: 2px solid rgba(11, 70, 132, 0.3);
+  background: rgba(21, 91, 166, 0.08);
+  color: #104f8b;
+  border-radius: 20px;
+  padding: 3px 8px;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.window-title-links a:hover,
+.window-title-links a:focus-visible {
+  background: rgba(21, 91, 166, 0.2);
+  outline: none;
+}
+
+.window-actions {
+  display: inline-flex;
+  align-items: center;
+}
+
+.window-actions button {
+  width: 44px;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.window-actions button:hover,
+.window-actions button:focus-visible {
+  background: rgba(0, 120, 215, 0.18);
+  outline: none;
+}
+
+.window-actions button:last-child:hover,
+.window-actions button:last-child:focus-visible {
+  background: #e81123;
+  color: #fff;
+}
+
+.window-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 20px;
+  overflow: auto;
+}
+
+.window-body h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
+  line-height: 1.3;
+}
+
+.window-body p {
+  margin: 12px 0 0;
+  color: var(--text-soft);
+  line-height: 1.62;
+}
+
+.project-preview {
+  margin: 16px 0 0;
+  border: 1px solid rgba(12, 55, 105, 0.22);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(10, 33, 66, 0.16);
+}
+
+.project-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.project-webview {
+  flex: 1;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  border: 1px solid rgba(12, 55, 105, 0.24);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #071b32;
+}
+
+.project-webview-toolbar {
+  height: 36px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: rgba(8, 26, 50, 0.95);
+  color: #d7ecff;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(91, 145, 210, 0.35);
+}
+
+.project-webview iframe {
+  flex: 1;
+  min-height: 220px;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.project-webview-blocked {
+  margin-top: 16px;
+  border: 1px dashed rgba(102, 150, 205, 0.55);
+  border-radius: 8px;
+  background: rgba(5, 27, 51, 0.08);
+  padding: 14px;
+}
+
+.project-webview-blocked strong {
+  display: block;
+  color: #0f4f8d;
+  font-size: 0.92rem;
+}
+
+.project-webview-blocked p {
+  margin: 8px 0 0;
+  color: #365d85;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.window-tags {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.window-tags li {
+  background: rgba(0, 120, 215, 0.1);
+  color: #0a4f8f;
+  border: 1px solid rgba(0, 120, 215, 0.26);
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.window-link {
+  margin-top: 18px;
+  display: inline-flex;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(140deg, #0078d7, #0f95d9);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-weight: 600;
+}
+
+.window-link:hover {
+  filter: brightness(1.04);
+}
+
+.start-menu {
+  position: absolute;
+  left: 0;
+  bottom: 46px;
+  width: min(440px, calc(100vw - 16px));
+  min-height: 420px;
+  z-index: 600;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  background:
+    linear-gradient(180deg, rgba(19, 36, 62, 0.96), rgba(10, 22, 44, 0.96)), rgba(8, 19, 38, 0.96);
+  border-top: 1px solid rgba(112, 173, 228, 0.38);
+  border-right: 1px solid rgba(112, 173, 228, 0.22);
+  box-shadow: 0 -14px 36px rgba(5, 14, 28, 0.46);
+  animation: start-pop 170ms ease;
+}
+
+.start-profile {
+  padding: 22px 18px;
+  border-right: 1px solid rgba(116, 178, 233, 0.2);
+  color: #d8ecff;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+}
+
+.start-profile span {
+  display: block;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.start-profile strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.25rem;
+}
+
+.start-apps {
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.start-apps button {
+  border: 0;
+  color: #eaf5ff;
+  background: rgba(255, 255, 255, 0.05);
+  text-align: left;
+  min-height: 40px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 4px;
+}
+
+.start-apps button:hover,
+.start-apps button:focus-visible {
+  background: rgba(79, 151, 214, 0.4);
+  outline: none;
+}
+
+.start-tiles {
+  grid-column: 1 / -1;
+  padding: 0 18px 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.start-tiles button {
+  min-height: 88px;
+  border: 0;
+  color: #fff;
+  text-align: left;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+  font-weight: 600;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--tile), var(--tile-alt));
+}
+
+.start-tiles button:last-child {
+  background: linear-gradient(140deg, #12926e, #19b57e);
+}
+
+.taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  background: var(--taskbar);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(145, 184, 220, 0.2);
+  display: flex;
+  align-items: center;
+  z-index: 900;
+}
+
+.taskbar-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  height: 50px;
+  width: 50px;
+  min-width: 50px;
+  padding: 0;
+  color: #f0f7ff;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+  background: transparent;
+  border-right: 1px solid rgba(145, 184, 220, 0.18);
+}
+
+.taskbar-start-icon {
+  font-size: 30px;
+}
+
+.taskbar-start:hover,
+.taskbar-start:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.taskbar-apps {
+  display: flex;
+  gap: 4px;
+  padding: 0 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  min-width: 0;
+  flex: 1;
+}
+
+.taskbar-app {
+  border: 0;
+  color: #d8eaff;
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 2px solid transparent;
+  min-height: 40px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+.taskbar-app:hover,
+.taskbar-app:focus-visible {
+  background: rgba(255, 255, 255, 0.16);
+  outline: none;
+}
+
+.taskbar-app-active {
+  border-bottom-color: #4fc2ff;
+}
+
+.taskbar-tray {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  height: 100%;
+}
+
+.taskbar-tray-icon {
+  width: 50px;
+  height: 100%;
+  border: 0;
+  border-left: 1px solid rgba(145, 184, 220, 0.18);
+  color: #d8eaff;
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.taskbar-tray-icon:hover,
+.taskbar-tray-icon:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  outline: none;
+}
+
+.wifi-icon {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.wifi-icon span {
+  width: 3px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.wifi-icon span:nth-child(1) {
+  height: 5px;
+  opacity: 0.7;
+}
+
+.wifi-icon span:nth-child(2) {
+  height: 9px;
+  opacity: 0.85;
+}
+
+.wifi-icon span:nth-child(3) {
+  height: 13px;
+}
+
+.taskbar-clock {
+  border: 0;
+  background: transparent;
+  height: 100%;
+  padding: 4px 12px;
+  border-left: 1px solid rgba(145, 184, 220, 0.18);
+  color: #d8eaff;
+  display: grid;
+  align-content: center;
+  justify-items: end;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+}
+
+.taskbar-clock:hover,
+.taskbar-clock:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.taskbar-clock strong {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.taskbar-clock span {
+  font-size: 0.7rem;
+  opacity: 0.84;
+}
+
+.calendar-flyout {
+  position: absolute;
+  right: 0;
+  bottom: 46px;
+  width: min(360px, calc(100vw - 10px));
+  background:
+    linear-gradient(180deg, rgba(18, 24, 39, 0.97), rgba(13, 18, 31, 0.98)), rgba(13, 18, 31, 0.98);
+  color: #eff6ff;
+  border-top: 1px solid rgba(135, 174, 216, 0.28);
+  border-left: 1px solid rgba(135, 174, 216, 0.18);
+  box-shadow: 0 -14px 34px rgba(5, 11, 24, 0.5);
+  z-index: 910;
+  padding: 18px;
+  font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+  animation: start-pop 170ms ease;
+}
+
+.calendar-top h2 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.calendar-top p {
+  margin: 6px 0 0;
+  color: rgba(226, 241, 255, 0.9);
+  font-size: 1.05rem;
+}
+
+.calendar-month-row {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  align-items: center;
+  gap: 8px;
+}
+
+.calendar-month-row button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  color: #ebf6ff;
+  background: transparent;
+  font-size: 1.25rem;
+}
+
+.calendar-month-row button:hover,
+.calendar-month-row button:focus-visible {
+  background: rgba(148, 198, 248, 0.2);
+  outline: none;
+}
+
+.calendar-month-row strong {
+  justify-self: center;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.calendar-weekdays span {
+  color: rgba(202, 225, 248, 0.88);
+  text-align: center;
+  font-size: 0.82rem;
+  padding: 6px 0;
+}
+
+.calendar-cell {
+  min-height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.calendar-muted {
+  color: rgba(147, 170, 194, 0.55);
+}
+
+.calendar-today {
+  background: #97406f;
+  color: #fff;
+  font-weight: 600;
+}
+
+@keyframes window-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes start-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .desktop-brand {
+    top: 12px;
+    right: 14px;
+  }
+
+  .desktop-icons {
+    width: calc(100vw - 26px);
+    grid-template-columns: repeat(4, minmax(70px, 1fr));
+    gap: 10px;
+    top: 14px;
+    left: 13px;
+  }
+
+  .desktop-icon {
+    font-size: 0.74rem;
+    padding: 8px 3px;
+  }
+
+  .desktop-icon-glyph {
+    width: 44px;
+    height: 44px;
+    font-size: 1.35rem;
+  }
+
+  .window {
+    left: 8px !important;
+    top: auto !important;
+    right: 8px;
+    width: auto;
+    min-height: 240px;
+    bottom: 54px;
+  }
+
+  .window-maximized {
+    left: 8px !important;
+    right: 8px;
+    width: auto;
+    top: 8px !important;
+    bottom: 54px;
+    height: auto;
+  }
+
+  .window-titlebar {
+    cursor: default;
+  }
+
+  .window-title-links {
+    display: none;
+  }
+
+  .start-menu {
+    width: 100%;
+    min-height: 320px;
+    grid-template-columns: 1fr;
+  }
+
+  .start-profile {
+    border-right: 0;
+    border-bottom: 1px solid rgba(116, 178, 233, 0.2);
+    padding: 16px;
+  }
+
+  .taskbar-app {
+    min-height: 32px;
+    font-size: 0.76rem;
+  }
+
+  .taskbar-clock {
+    min-width: 110px;
+    padding: 4px 8px;
+  }
+
+  .taskbar-tray-icon {
+    width: 34px;
+  }
+
+  .calendar-flyout {
+    right: 0;
+    left: 0;
+    width: 100%;
+    padding: 14px;
+  }
+
+  .calendar-top h2 {
+    font-size: 1.5rem;
+  }
+
+  .calendar-top p {
+    font-size: 0.92rem;
+  }
+
+  .calendar-cell {
+    min-height: 32px;
+  }
+
+  .project-webview iframe {
+    height: 220px;
+  }
+}
