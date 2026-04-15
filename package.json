@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "sync:wallpapers": "node scripts/generate-wallpapers.mjs",
+    "predev": "npm run sync:wallpapers",
     "dev": "vite",
+    "prebuild": "npm run sync:wallpapers",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

@@ -32,5 +32,5 @@ export type CalendarCell = {
 export type WallpaperOption = {
   name: string;
   label: string;
-  className: string;
+  imageUrl: string;
 };

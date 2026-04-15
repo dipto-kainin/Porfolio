@@ -51,9 +51,12 @@ export function StartMenu({
 
             return (
               <button
-                className={`wallpaper-option ${option.className} ${isActive ? 'wallpaper-option-active' : ''}`}
+                className={`wallpaper-option ${isActive ? 'wallpaper-option-active' : ''}`}
                 key={option.name}
                 onClick={() => onSelectWallpaper(option.name)}
+                style={{
+                  backgroundImage: `linear-gradient(180deg, rgba(7, 18, 38, 0.16), rgba(7, 18, 38, 0.36)), url("${option.imageUrl}")`,
+                }}
                 type="button"
               >
                 <span>{option.label}</span>

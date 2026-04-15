@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { CalendarFlyout } from './components/CalendarFlyout';
 import { DesktopIcons } from './components/DesktopIcons';
 import { DesktopWindow } from './components/DesktopWindow';
@@ -91,6 +92,14 @@ function App() {
     () =>
       wallpaperOptions.find((option) => option.name === selectedWallpaperName) ?? defaultWallpaper,
     [selectedWallpaperName],
+  );
+
+  const desktopStyle = useMemo(
+    () =>
+      ({
+        backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.15)), url("${selectedWallpaper.imageUrl}")`,
+      }) satisfies CSSProperties,
+    [selectedWallpaper.imageUrl],
   );
 
   useEffect(() => {
@@ -244,7 +253,7 @@ function App() {
   };
 
   return (
-    <main className={`desktop-shell ${selectedWallpaper.className}`}>
+    <main className="desktop-shell" style={desktopStyle}>
       <header className="desktop-brand">
         <h1>Portfolio OS</h1>
         <p>Windows style workspace</p>

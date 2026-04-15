@@ -16,41 +16,10 @@
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-}
-
-.wallpaper-sunset-valley {
-  background:
-    radial-gradient(circle at 10% 16%, rgba(255, 167, 89, 0.3), transparent 24%),
-    radial-gradient(circle at 82% 18%, rgba(250, 228, 128, 0.2), transparent 28%),
-    linear-gradient(145deg, #4f2f52 0%, #7e3f6b 34%, #aa5c58 62%, #db8d58 100%);
-}
-
-.wallpaper-teal-mountains {
-  background:
-    radial-gradient(circle at 64% 26%, rgba(83, 255, 214, 0.34), transparent 28%),
-    radial-gradient(circle at 20% 60%, rgba(37, 98, 203, 0.28), transparent 40%),
-    linear-gradient(160deg, #021f4f 0%, #033278 36%, #0c5d92 64%, #10908f 100%);
-}
-
-.wallpaper-arch-blue {
-  background:
-    radial-gradient(circle at 58% 22%, rgba(195, 222, 255, 0.42), transparent 30%),
-    radial-gradient(circle at 8% 26%, rgba(140, 164, 255, 0.28), transparent 26%),
-    linear-gradient(165deg, #15154d 0%, #2842b8 38%, #4f76f2 70%, #7098fb 100%);
-}
-
-.wallpaper-midnight-unix {
-  background:
-    radial-gradient(circle at 72% 12%, rgba(131, 175, 255, 0.2), transparent 20%),
-    radial-gradient(circle at 30% 65%, rgba(78, 108, 182, 0.18), transparent 32%),
-    linear-gradient(155deg, #050813 0%, #0a1128 35%, #111d3f 68%, #1a2d56 100%);
-}
-
-.wallpaper-win11-bloom {
-  background:
-    radial-gradient(circle at 44% 36%, rgba(75, 180, 255, 0.45), transparent 24%),
-    radial-gradient(circle at 64% 46%, rgba(45, 102, 255, 0.34), transparent 30%),
-    linear-gradient(165deg, #9cb3dd 0%, #86a6df 36%, #7397db 64%, #678fd9 100%);
+  background-color: #0d2a5f;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .desktop-shell::before {
@@ -496,6 +465,9 @@
   border: 1px solid rgba(179, 218, 255, 0.36);
   border-radius: 8px;
   color: #f2f7ff;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   text-align: left;
   padding: 8px;
   font-size: 0.74rem;
@@ -519,36 +491,6 @@
   box-shadow:
     0 0 0 2px rgba(168, 224, 255, 0.8),
     0 8px 16px rgba(9, 20, 40, 0.42);
-}
-
-.wallpaper-option.wallpaper-sunset-valley {
-  background:
-    radial-gradient(circle at 14% 20%, rgba(255, 181, 108, 0.35), transparent 32%),
-    linear-gradient(150deg, #5a3858, #96516b, #cb7954);
-}
-
-.wallpaper-option.wallpaper-teal-mountains {
-  background:
-    radial-gradient(circle at 74% 22%, rgba(95, 255, 214, 0.35), transparent 30%),
-    linear-gradient(150deg, #02244f, #04497e, #0f857d);
-}
-
-.wallpaper-option.wallpaper-arch-blue {
-  background:
-    radial-gradient(circle at 60% 24%, rgba(199, 225, 255, 0.34), transparent 34%),
-    linear-gradient(150deg, #17206d, #3353d8, #5f89ff);
-}
-
-.wallpaper-option.wallpaper-midnight-unix {
-  background:
-    radial-gradient(circle at 70% 18%, rgba(129, 174, 255, 0.2), transparent 26%),
-    linear-gradient(150deg, #040911, #0a1533, #13264f);
-}
-
-.wallpaper-option.wallpaper-win11-bloom {
-  background:
-    radial-gradient(circle at 52% 28%, rgba(67, 177, 255, 0.46), transparent 35%),
-    linear-gradient(150deg, #9db2dc, #7ea1de, #6690d8);
 }
 
 .taskbar {
