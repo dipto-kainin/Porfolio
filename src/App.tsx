@@ -1,103 +1,27 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FaWindows } from 'react-icons/fa6';
+import { CalendarFlyout } from './components/CalendarFlyout';
+import { DesktopIcons } from './components/DesktopIcons';
+import { DesktopWindow } from './components/DesktopWindow';
+import { StartMenu } from './components/StartMenu';
+import { Taskbar } from './components/Taskbar';
+import { desktopWindows, initialPositions } from './data/desktopWindows';
+import { defaultWallpaper, wallpaperOptions } from './data/wallpapers';
 import './App.css';
-type WindowKind = 'project' | 'about' | 'contact';
+import type { CalendarCell, WindowPosition } from './types/desktop';
 
-type DesktopWindow = {
-  id: string;
-  kind: WindowKind;
-  title: string;
-  icon: string;
-  summary: string;
-  details: string;
-  stack?: string[];
-  link?: string;
-  repoLink?: string;
-  projectLink?: string;
-  previewImage?: string;
-  previewImageAlt?: string;
-  previewFrameUrl?: string;
-  previewBlockedMessage?: string;
-};
-
-type WindowPosition = {
-  x: number;
-  y: number;
-};
-
-const desktopWindows: DesktopWindow[] = [
-  {
-    id: 'about-me',
-    kind: 'about',
-    title: 'About Me',
-    icon: '👤',
-    summary: 'Full Stack Developer | Go Backend Enthusiast | React & React Native Developer',
-    details:
-      'Final-year CSE student at RCCIIT with strong backend expertise in Go and scalable systems. Experienced in building real-time applications, API-driven systems, and polished frontend dashboards. Passionate about system design, performance optimization, and building impactful products. Currently interning at WhatBytes as a React Native developer.',
-  },
-  {
-    id: 'kai-framework',
-    kind: 'project',
-    title: 'Kai Framework',
-    icon: '⚙️',
-    summary:
-      'A lightweight Go HTTP framework built from scratch with routing, middleware chaining, and production-style utilities.',
-    details:
-      'A custom Go HTTP framework with method-based routing, path parameters, middleware chaining with control flow, and built-in logging, recovery, CORS, and rate limiting. Designed for building scalable API services.',
-    stack: ['Go', 'net/http', 'Middleware', 'Routing'],
-    repoLink: 'https://github.com/dipto-kainin/kai',
-    projectLink: 'https://pkg.go.dev/github.com/dipto-kainin/kai',
-    previewImage: '/Kai.png',
-    previewImageAlt: 'Kai package documentation screenshot',
-  },
-  {
-    id: 'league-of-coders',
-    kind: 'project',
-    title: 'League of Coders',
-    icon: '🎮',
-    summary:
-      'A real-time 1v1 coding platform with matchmaking, code execution, and competitive gameplay.',
-    details:
-      'Real-time matchmaking system with code execution using Judge0, PostgreSQL + Redis architecture, JWT and OAuth authentication. Built as a full-stack competitive coding challenge platform.',
-    stack: ['Next.js', 'TypeScript', 'Go', 'PostgreSQL', 'Redis', 'Judge0'],
-    repoLink: 'https://github.com/dipto-kainin/Leauge-of-Coders',
-  },
-  {
-    id: 'finflow-dashboard',
-    kind: 'project',
-    title: 'FinFlow Dashboard',
-    icon: '💰',
-    summary:
-      'A responsive finance dashboard with analytics, transaction management, and data visualization.',
-    details:
-      'Modern finance dashboard featuring role-based views, interactive charts and analytics (KPIs), search/filter/pagination, and CSV/Excel import support. Built with React and Vite for optimal performance.',
-    stack: ['React', 'Vite', 'Tailwind CSS', 'ECharts'],
-    repoLink: 'https://github.com/dipto-kainin/FinFlow-Dashboard',
-    projectLink: 'https://fin-flow-dashboard-nine.vercel.app/',
-    previewFrameUrl: 'https://fin-flow-dashboard-nine.vercel.app/',
-  },
-  {
-    id: 'contact',
-    kind: 'contact',
-    title: 'Contact',
-    icon: '✉️',
-    summary:
-      'Full stack developer open to full-time roles, freelance projects, and collaborations.',
-    details:
-      'Reach out for full-stack development opportunities, backend system design discussions, or product collaborations. Phone: +91-7044932097 | Location: Kolkata, India',
-    link: 'mailto:kaininhop@gmail.com?subject=Portfolio%20Inquiry',
-  },
-];
-
-const initialPositions: Record<string, WindowPosition> = {
-  'about-me': { x: 120, y: 92 },
-  'kai-framework': { x: 280, y: 126 },
-  'league-of-coders': { x: 220, y: 174 },
-  'finflow-dashboard': { x: 360, y: 106 },
-  contact: { x: 360, y: 106 },
-};
+const WALLPAPER_STORAGE_KEY = 'portfolio.wallpaper';
 
 function App() {
+  const [selectedWallpaperName, setSelectedWallpaperName] = useState(() => {
+    if (typeof window === 'undefined') {
+      return defaultWallpaper.name;
+    }
+
+    const saved = window.localStorage.getItem(WALLPAPER_STORAGE_KEY);
+    return wallpaperOptions.some((option) => option.name === saved)
+      ? saved!
+      : defaultWallpaper.name;
+  });
   const [openIds, setOpenIds] = useState<string[]>(['about-me']);
   const [activeId, setActiveId] = useState<string>('about-me');
   const [minimizedIds, setMinimizedIds] = useState<string[]>([]);
@@ -121,13 +45,13 @@ function App() {
     [minimizedIds, openIds],
   );
 
-  const calendarCells = useMemo(() => {
+  const calendarCells = useMemo<CalendarCell[]>(() => {
     const year = calendarMonth.getFullYear();
     const month = calendarMonth.getMonth();
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysInPrevMonth = new Date(year, month, 0).getDate();
-    const cells: Array<{ key: string; label: number; muted: boolean; today: boolean }> = [];
+    const cells: CalendarCell[] = [];
 
     for (let index = firstDay - 1; index >= 0; index -= 1) {
       const label = daysInPrevMonth - index;
@@ -162,6 +86,16 @@ function App() {
 
     return cells;
   }, [calendarMonth, now]);
+
+  const selectedWallpaper = useMemo(
+    () =>
+      wallpaperOptions.find((option) => option.name === selectedWallpaperName) ?? defaultWallpaper,
+    [selectedWallpaperName],
+  );
+
+  useEffect(() => {
+    window.localStorage.setItem(WALLPAPER_STORAGE_KEY, selectedWallpaperName);
+  }, [selectedWallpaperName]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -292,29 +226,31 @@ function App() {
     };
   };
 
+  const handleTaskbarWindowClick = (id: string) => {
+    const isMinimized = minimizedIds.includes(id);
+    const isActive = activeId === id && !isMinimized;
+
+    if (isMinimized) {
+      focusWindow(id);
+      return;
+    }
+
+    if (isActive) {
+      minimizeWindow(id);
+      return;
+    }
+
+    focusWindow(id);
+  };
+
   return (
-    <main className="desktop-shell">
+    <main className={`desktop-shell ${selectedWallpaper.className}`}>
       <header className="desktop-brand">
         <h1>Portfolio OS</h1>
-        <p>Windows 10 style workspace</p>
+        <p>Windows style workspace</p>
       </header>
 
-      <section className="desktop-icons" aria-label="Desktop shortcuts">
-        {desktopWindows.map((windowItem) => (
-          <button
-            className="desktop-icon"
-            key={windowItem.id}
-            onClick={() => setActiveId(windowItem.id)}
-            onDoubleClick={() => openWindow(windowItem.id)}
-            type="button"
-          >
-            <span className="desktop-icon-glyph" aria-hidden="true">
-              {windowItem.icon}
-            </span>
-            <span>{windowItem.title}</span>
-          </button>
-        ))}
-      </section>
+      <DesktopIcons windows={desktopWindows} onOpen={openWindow} onSelect={setActiveId} />
 
       {openIds.map((id, index) => {
         if (minimizedIds.includes(id)) {
@@ -331,290 +267,63 @@ function App() {
         const isMaximized = maximizedWindowId === id;
 
         return (
-          <article
-            className={`window ${isActive ? 'window-active' : ''} ${isMaximized ? 'window-maximized' : ''}`}
+          <DesktopWindow
+            id={id}
+            index={index}
+            isActive={isActive}
+            isMaximized={isMaximized}
+            item={item}
             key={id}
-            onMouseDown={() => focusWindow(id)}
-            style={
-              isMaximized
-                ? { zIndex: 200 + index }
-                : { left: position.x, top: position.y, zIndex: 200 + index }
-            }
-          >
-            <div
-              className="window-titlebar"
-              onMouseDown={(event) => handleTitleBarMouseDown(event, id)}
-            >
-              <div className="window-title">
-                <span aria-hidden="true">{item.icon}</span>
-                <strong>{item.title}</strong>
-
-                {item.kind === 'project' ? (
-                  <div
-                    className="window-title-links"
-                    onMouseDown={(event) => event.stopPropagation()}
-                  >
-                    {item.repoLink ? (
-                      <a href={item.repoLink} rel="noreferrer" target="_blank">
-                        Open repo
-                      </a>
-                    ) : null}
-                    {item.projectLink ? (
-                      <a href={item.projectLink} rel="noreferrer" target="_blank">
-                        Project link
-                      </a>
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
-              <div className="window-actions">
-                <button
-                  onClick={() => minimizeWindow(id)}
-                  onMouseDown={(event) => event.stopPropagation()}
-                  type="button"
-                >
-                  _
-                </button>
-                <button
-                  onClick={() => toggleMaximizeWindow(id)}
-                  onMouseDown={(event) => event.stopPropagation()}
-                  type="button"
-                >
-                  {isMaximized ? '❐' : '□'}
-                </button>
-                <button
-                  onClick={() => closeWindow(id)}
-                  onMouseDown={(event) => event.stopPropagation()}
-                  type="button"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-
-            <div className="window-body">
-              <h2>{item.summary}</h2>
-              <p>{item.details}</p>
-
-              {item.previewImage ? (
-                <figure className="project-preview">
-                  <img
-                    alt={item.previewImageAlt ?? `${item.title} preview`}
-                    src={item.previewImage}
-                  />
-                </figure>
-              ) : null}
-
-              {item.previewFrameUrl ? (
-                <div className="project-webview">
-                  <div className="project-webview-toolbar">
-                    <span>Live Preview</span>
-                  </div>
-                  <iframe
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    src={item.previewFrameUrl}
-                    title={`${item.title} web view`}
-                  />
-                </div>
-              ) : null}
-
-              {item.previewBlockedMessage ? (
-                <div className="project-webview-blocked" role="note">
-                  <strong>Preview unavailable in-app</strong>
-                  <p>{item.previewBlockedMessage}</p>
-                </div>
-              ) : null}
-
-              {item.stack ? (
-                <ul className="window-tags" aria-label="Project technologies">
-                  {item.stack.map((tech) => (
-                    <li key={tech}>{tech}</li>
-                  ))}
-                </ul>
-              ) : null}
-
-              {item.kind === 'contact' && item.link ? (
-                <a className="window-link" href={item.link} rel="noreferrer" target="_self">
-                  Open email client
-                </a>
-              ) : null}
-            </div>
-          </article>
+            onClose={closeWindow}
+            onFocus={focusWindow}
+            onMinimize={minimizeWindow}
+            onTitleBarMouseDown={handleTitleBarMouseDown}
+            onToggleMaximize={toggleMaximizeWindow}
+            position={position}
+          />
         );
       })}
 
       {startOpen ? (
-        <aside className="start-menu" aria-label="Start menu">
-          <div className="start-profile">
-            <span>Dev Profile</span>
-            <strong>Creative Frontend</strong>
-          </div>
-
-          <div className="start-apps">
-            {desktopWindows.map((item) => (
-              <button key={item.id} onClick={() => openWindow(item.id)} type="button">
-                <span aria-hidden="true">{item.icon}</span>
-                <span>{item.title}</span>
-              </button>
-            ))}
-          </div>
-
-          <div className="start-tiles" aria-label="Featured tiles">
-            <button onClick={() => openWindow('kai-framework')} type="button">
-              Featured Project
-            </button>
-            <button onClick={() => openWindow('contact')} type="button">
-              Let's Collaborate
-            </button>
-          </div>
-        </aside>
+        <StartMenu
+          onOpenWindow={openWindow}
+          onSelectWallpaper={setSelectedWallpaperName}
+          selectedWallpaperName={selectedWallpaperName}
+          wallpaperOptions={wallpaperOptions}
+          windows={desktopWindows}
+        />
       ) : null}
 
-      <footer className="taskbar">
-        <button
-          aria-label="Start"
-          className="taskbar-start"
-          onClick={() => {
-            setStartOpen((prev) => !prev);
-            setCalendarOpen(false);
-          }}
-          type="button"
-        >
-          <FaWindows aria-hidden="true" className="taskbar-start-icon" />
-        </button>
-
-        <div className="taskbar-apps" aria-label="Opened apps">
-          {openIds.map((id) => {
-            const item = desktopWindows.find((entry) => entry.id === id);
-            if (!item) {
-              return null;
-            }
-
-            const isMinimized = minimizedIds.includes(id);
-            const isActive = activeId === id && !isMinimized;
-
-            return (
-              <button
-                className={`taskbar-app ${isActive ? 'taskbar-app-active' : ''}`}
-                key={id}
-                onClick={() => {
-                  if (isMinimized) {
-                    focusWindow(id);
-                    return;
-                  }
-
-                  if (isActive) {
-                    minimizeWindow(id);
-                    return;
-                  }
-
-                  focusWindow(id);
-                }}
-                type="button"
-              >
-                <span aria-hidden="true">{item.icon}</span>
-                <span>{item.title}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="taskbar-tray" aria-label="System tray">
-          <button className="taskbar-tray-icon" title="Internet access" type="button">
-            <span className="wifi-icon" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
-          </button>
-
-          <button
-            aria-expanded={calendarOpen}
-            className="taskbar-clock"
-            onClick={() => {
-              setCalendarOpen((prev) => !prev);
-              setStartOpen(false);
-            }}
-            type="button"
-          >
-            <strong>
-              {now.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </strong>
-            <span>
-              {now.toLocaleDateString([], {
-                month: 'short',
-                day: '2-digit',
-                year: 'numeric',
-              })}
-            </span>
-          </button>
-        </div>
-      </footer>
+      <Taskbar
+        activeId={activeId}
+        calendarOpen={calendarOpen}
+        minimizedIds={minimizedIds}
+        now={now}
+        onTaskbarWindowClick={handleTaskbarWindowClick}
+        onToggleCalendar={() => {
+          setCalendarOpen((prev) => !prev);
+          setStartOpen(false);
+        }}
+        onToggleStart={() => {
+          setStartOpen((prev) => !prev);
+          setCalendarOpen(false);
+        }}
+        openIds={openIds}
+        windows={desktopWindows}
+      />
 
       {calendarOpen ? (
-        <aside className="calendar-flyout" aria-label="Calendar panel">
-          <header className="calendar-top">
-            <h2>{now.toLocaleDateString([], { weekday: 'long' })}</h2>
-            <p>
-              {now.toLocaleDateString([], {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })}
-            </p>
-          </header>
-
-          <div className="calendar-month-row">
-            <button
-              onClick={() =>
-                setCalendarMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))
-              }
-              type="button"
-            >
-              ‹
-            </button>
-            <strong>
-              {calendarMonth.toLocaleDateString([], {
-                month: 'long',
-                year: 'numeric',
-              })}
-            </strong>
-            <button
-              onClick={() =>
-                setCalendarMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))
-              }
-              type="button"
-            >
-              ›
-            </button>
-          </div>
-
-          <div className="calendar-weekdays" aria-hidden="true">
-            <span>Sun</span>
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
-          </div>
-
-          <div className="calendar-grid" role="grid">
-            {calendarCells.map((cell) => (
-              <span
-                className={`calendar-cell ${cell.muted ? 'calendar-muted' : ''} ${cell.today ? 'calendar-today' : ''}`}
-                key={cell.key}
-                role="gridcell"
-              >
-                {cell.label}
-              </span>
-            ))}
-          </div>
-        </aside>
+        <CalendarFlyout
+          calendarCells={calendarCells}
+          calendarMonth={calendarMonth}
+          now={now}
+          onNextMonth={() =>
+            setCalendarMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))
+          }
+          onPreviousMonth={() =>
+            setCalendarMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))
+          }
+        />
       ) : null}
     </main>
   );
