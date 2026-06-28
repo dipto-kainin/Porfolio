@@ -31,7 +31,7 @@ export function DesktopWindow({
   onTitleBarMouseDown,
 }: DesktopWindowProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const tl = useRef<gsap.core.Timeline | null>(null);
+  const tl = useRef<gsap.core.Tween | null>(null);
 
   useLayoutEffect(() => {
     gsap.fromTo(
