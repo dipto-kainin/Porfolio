@@ -11,6 +11,7 @@ export type DesktopWindow = {
   link?: string;
   repoLink?: string;
   projectLink?: string;
+  extraLinks?: { label: string; url: string }[];
   previewImage?: string;
   previewImageAlt?: string;
   previewFrameUrl?: string;
@@ -34,3 +35,9 @@ export type WallpaperOption = {
   label: string;
   imageUrl: string;
 };
+
+declare global {
+  interface Window {
+    __bootScreen: HTMLElement | undefined;
+  }
+}

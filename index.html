@@ -5,9 +5,74 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>porfolio</title>
+    <style>
+      .boot-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #0d1117;
+        color: #c9d1d9;
+        font-family: system-ui, -apple-system, sans-serif;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+      .boot-screen-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .boot-spinner {
+        width: 40px;
+        height: 40px;
+        position: relative;
+        margin-bottom: 16px;
+      }
+      .boot-spinner i {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 8px;
+        height: 8px;
+        margin-left: -4px;
+        margin-top: -4px;
+        border-radius: 50%;
+        background: #58a6ff;
+        animation: boot-fade 1.2s linear infinite;
+      }
+      .boot-spinner i:nth-child(1) { transform: rotate(0deg) translateY(-16px); animation-delay: 0s; }
+      .boot-spinner i:nth-child(2) { transform: rotate(45deg) translateY(-16px); animation-delay: 0.15s; }
+      .boot-spinner i:nth-child(3) { transform: rotate(90deg) translateY(-16px); animation-delay: 0.3s; }
+      .boot-spinner i:nth-child(4) { transform: rotate(135deg) translateY(-16px); animation-delay: 0.45s; }
+      .boot-spinner i:nth-child(5) { transform: rotate(180deg) translateY(-16px); animation-delay: 0.6s; }
+      .boot-spinner i:nth-child(6) { transform: rotate(225deg) translateY(-16px); animation-delay: 0.75s; }
+      .boot-spinner i:nth-child(7) { transform: rotate(270deg) translateY(-16px); animation-delay: 0.9s; }
+      .boot-spinner i:nth-child(8) { transform: rotate(315deg) translateY(-16px); animation-delay: 1.05s; }
+      @keyframes boot-fade {
+        0%, 100% { opacity: 0.15; }
+        50% { opacity: 1; }
+      }
+      .boot-text {
+        font-size: 0.92rem;
+        opacity: 0.7;
+        letter-spacing: 0.08em;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot-screen" id="boot-screen">
+        <div class="boot-spinner" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="boot-text">Loading</div>
+      </div>
+    </div>
+    <script>
+      window.__bootScreen = document.getElementById('boot-screen');
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

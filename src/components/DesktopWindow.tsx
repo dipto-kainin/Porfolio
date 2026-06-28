@@ -1,4 +1,6 @@
+import { useLayoutEffect, useRef } from 'react';
 import type { MouseEvent } from 'react';
+import gsap from 'gsap';
 import type { DesktopWindow as DesktopWindowModel, WindowPosition } from '../types/desktop';
 
 type DesktopWindowProps = {
@@ -28,14 +30,50 @@ export function DesktopWindow({
   onClose,
   onTitleBarMouseDown,
 }: DesktopWindowProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const tl = useRef<gsap.core.Timeline | null>(null);
+
+  useLayoutEffect(() => {
+    gsap.fromTo(
+      ref.current,
+      { opacity: 0, scale: 0.92 },
+      { opacity: 1, scale: 1, duration: 0.2, ease: 'power3.out' },
+    );
+  }, []);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    tl.current?.kill();
+    tl.current = null;
+
+    gsap.set(el, { clearProps: 'width|height|borderRadius' });
+
+    if (isMaximized) {
+      tl.current = gsap.to(el, {
+        borderRadius: 0,
+        duration: 0.25,
+        ease: 'power3.out',
+      });
+    } else {
+      tl.current = gsap.to(el, {
+        borderRadius: '8px',
+        duration: 0.25,
+        ease: 'power3.out',
+      });
+    }
+  }, [isMaximized]);
+
   return (
     <article
+      ref={ref}
       className={`window ${isActive ? 'window-active' : ''} ${isMaximized ? 'window-maximized' : ''}`}
       onMouseDown={() => onFocus(id)}
       style={
         isMaximized
           ? { zIndex: 200 + index }
-          : { left: position.x, top: position.y, zIndex: 200 + index }
+          : { transform: `translate(${position.x}px, ${position.y}px)`, zIndex: 200 + index }
       }
     >
       <div className="window-titlebar" onMouseDown={(event) => onTitleBarMouseDown(event, id)}>
@@ -45,16 +83,21 @@ export function DesktopWindow({
 
           {item.kind === 'project' ? (
             <div className="window-title-links" onMouseDown={(event) => event.stopPropagation()}>
-              {item.repoLink ? (
-                <a href={item.repoLink} rel="noreferrer" target="_blank">
-                  Open repo
-                </a>
-              ) : null}
               {item.projectLink ? (
                 <a href={item.projectLink} rel="noreferrer" target="_blank">
-                  Project link
+                  Live demo
                 </a>
               ) : null}
+              {item.repoLink ? (
+                <a href={item.repoLink} rel="noreferrer" target="_blank">
+                  Repo
+                </a>
+              ) : null}
+              {item.extraLinks?.map((link) => (
+                <a href={link.url} key={link.label} rel="noreferrer" target="_blank">
+                  {link.label}
+                </a>
+              ))}
             </div>
           ) : null}
         </div>

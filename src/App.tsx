@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import gsap from 'gsap';
+import { BootScreen } from './components/BootScreen';
 import { CalendarFlyout } from './components/CalendarFlyout';
 import { DesktopIcons } from './components/DesktopIcons';
 import { DesktopWindow } from './components/DesktopWindow';
@@ -12,7 +14,13 @@ import type { CalendarCell, WindowPosition } from './types/desktop';
 
 const WALLPAPER_STORAGE_KEY = 'portfolio.wallpaper';
 
+const bootAssets = [
+  ...wallpaperOptions.map((o) => o.imageUrl),
+  ...desktopWindows.filter((w) => w.previewImage).map((w) => w.previewImage!),
+];
+
 function App() {
+  const [booted, setBooted] = useState(false);
   const [selectedWallpaperName, setSelectedWallpaperName] = useState(() => {
     if (typeof window === 'undefined') {
       return defaultWallpaper.name;
@@ -252,8 +260,27 @@ function App() {
     focusWindow(id);
   };
 
+  const desktopRef = useRef<HTMLDivElement>(null);
+
+  const handleBootComplete = useCallback(() => {
+    setBooted(true);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!booted) return;
+    gsap.fromTo(
+      desktopRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.3, ease: 'power2.out' },
+    );
+  }, [booted]);
+
+  if (!booted) {
+    return <BootScreen imageUrls={bootAssets} onComplete={handleBootComplete} />;
+  }
+
   return (
-    <main className="desktop-shell" style={desktopStyle}>
+    <main className="desktop-shell" ref={desktopRef} style={desktopStyle}>
       <header className="desktop-brand">
         <h1>Portfolio OS</h1>
         <p>Windows style workspace</p>
