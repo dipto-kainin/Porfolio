@@ -1,4 +1,5 @@
 import type { DesktopWindow, WallpaperOption } from '../types/desktop';
+import { AppIcon } from './AppIcon';
 
 type StartMenuProps = {
   windows: DesktopWindow[];
@@ -25,7 +26,7 @@ export function StartMenu({
       <div className="start-apps">
         {windows.map((item) => (
           <button key={item.id} onClick={() => onOpenWindow(item.id)} type="button">
-            <span aria-hidden="true">{item.icon}</span>
+            <AppIcon name={item.icon} className="start-app-icon" />
             <span>{item.title}</span>
           </button>
         ))}

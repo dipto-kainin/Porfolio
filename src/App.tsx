@@ -5,6 +5,7 @@ import { BootScreen } from './components/BootScreen';
 import { CalendarFlyout } from './components/CalendarFlyout';
 import { DesktopIcons } from './components/DesktopIcons';
 import { DesktopWindow } from './components/DesktopWindow';
+import { SearchBar } from './components/SearchBar';
 import { StartMenu } from './components/StartMenu';
 import { Taskbar } from './components/Taskbar';
 import { desktopWindows, initialPositions } from './data/desktopWindows';
@@ -41,6 +42,21 @@ function App() {
   const [calendarMonth, setCalendarMonth] = useState(
     () => new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   );
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const filteredWindows = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return desktopWindows;
+    }
+    const lowerQuery = searchQuery.toLowerCase();
+    return desktopWindows.filter(
+      (w) =>
+        w.title.toLowerCase().includes(lowerQuery) ||
+        w.summary.toLowerCase().includes(lowerQuery) ||
+        (w.stack && w.stack.some((tech) => tech.toLowerCase().includes(lowerQuery))),
+    );
+  }, [searchQuery]);
   const [positions, setPositions] = useState<Record<string, WindowPosition>>(initialPositions);
 
   const dragState = useRef<{
@@ -128,6 +144,7 @@ function App() {
         return;
       }
 
+      const dragId = dragState.current.id;
       const nextX = Math.max(
         16,
         Math.min(event.clientX - dragState.current.offsetX, window.innerWidth - 520),
@@ -139,7 +156,7 @@ function App() {
 
       setPositions((prev) => ({
         ...prev,
-        [dragState.current!.id]: { x: nextX, y: nextY },
+        [dragId]: { x: nextX, y: nextY },
       }));
     };
 
@@ -182,6 +199,17 @@ function App() {
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [maximizedWindowId]);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'p') {
+        event.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   const openWindow = (id: string) => {
     setOpenIds((prev) =>
@@ -286,7 +314,20 @@ function App() {
         <p>Windows style workspace</p>
       </header>
 
-      <DesktopIcons windows={desktopWindows} onOpen={openWindow} onSelect={setActiveId} />
+      {isSearchOpen ? (
+        <SearchBar
+          query={searchQuery}
+          onChange={setSearchQuery}
+          filteredItems={filteredWindows}
+          onOpenItem={openWindow}
+          onClose={() => {
+            setIsSearchOpen(false);
+            setSearchQuery('');
+          }}
+        />
+      ) : null}
+
+      <DesktopIcons windows={isSearchOpen ? filteredWindows : desktopWindows} onOpen={openWindow} onSelect={setActiveId} />
 
       {openIds.map((id, index) => {
         if (minimizedIds.includes(id)) {

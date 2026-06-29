@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import type { MouseEvent } from 'react';
 import gsap from 'gsap';
 import type { DesktopWindow as DesktopWindowModel, WindowPosition } from '../types/desktop';
+import { AppIcon } from './AppIcon';
 
 type DesktopWindowProps = {
   id: string;
@@ -58,7 +59,7 @@ export function DesktopWindow({
       });
     } else {
       tl.current = gsap.to(el, {
-        borderRadius: '8px',
+        borderRadius: '12px',
         duration: 0.25,
         ease: 'power3.out',
       });
@@ -78,7 +79,7 @@ export function DesktopWindow({
     >
       <div className="window-titlebar" onMouseDown={(event) => onTitleBarMouseDown(event, id)}>
         <div className="window-title">
-          <span aria-hidden="true">{item.icon}</span>
+          <AppIcon name={item.icon} className="window-title-icon" />
           <strong>{item.title}</strong>
 
           {item.kind === 'project' ? (

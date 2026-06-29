@@ -1,4 +1,5 @@
 import type { DesktopWindow } from '../types/desktop';
+import { AppIcon } from './AppIcon';
 
 type DesktopIconsProps = {
   windows: DesktopWindow[];
@@ -18,7 +19,7 @@ export function DesktopIcons({ windows, onSelect, onOpen }: DesktopIconsProps) {
           type="button"
         >
           <span className="desktop-icon-glyph" aria-hidden="true">
-            {windowItem.icon}
+            <AppIcon name={windowItem.icon} />
           </span>
           <span>{windowItem.title}</span>
         </button>

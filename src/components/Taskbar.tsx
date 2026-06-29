@@ -1,5 +1,6 @@
 import { FaWindows } from 'react-icons/fa6';
 import type { DesktopWindow } from '../types/desktop';
+import { AppIcon } from './AppIcon';
 
 type TaskbarProps = {
   windows: DesktopWindow[];
@@ -46,9 +47,9 @@ export function Taskbar({
               key={id}
               onClick={() => onTaskbarWindowClick(id)}
               type="button"
+              title={item.title}
             >
-              <span aria-hidden="true">{item.icon}</span>
-              <span>{item.title}</span>
+              <AppIcon name={item.icon} className="taskbar-app-icon" />
             </button>
           );
         })}

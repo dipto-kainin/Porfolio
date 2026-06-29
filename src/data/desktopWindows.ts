@@ -5,7 +5,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "about-me",
     kind: "about",
     title: "About Me",
-    icon: "👤",
+    icon: "user",
     summary:
       "Full Stack Developer | Go Backend Enthusiast | React & React Native Developer",
     details:
@@ -15,7 +15,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "bistro-chains",
     kind: "project",
     title: "BistroChains",
-    icon: "🍽️",
+    icon: "utensils",
     summary:
       "Full-stack restaurant management platform with 37+ REST API endpoints and 13+ frontend screens supporting bookings, orders, billing, and role-based operations.",
     details:
@@ -30,6 +30,7 @@ export const desktopWindows: DesktopWindow[] = [
       "Razorpay API",
     ],
     projectLink: "https://bistro-chains.vercel.app/",
+    previewFrameUrl: "https://bistro-chains.vercel.app/",
     repoLink: "https://github.com/dipto-kainin/RestroManager",
     extraLinks: [
       {
@@ -42,7 +43,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "raggame",
     kind: "project",
     title: "RagGame",
-    icon: "🎲",
+    icon: "dice-five",
     summary:
       "A multi-agent RAG-powered terminal game integrating LLM agents, evaluation engines, and reasoning workflows for dynamic gameplay generation.",
     details:
@@ -54,7 +55,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "kai-framework",
     kind: "project",
     title: "Kai Framework",
-    icon: "⚙️",
+    icon: "gear",
     summary:
       "A lightweight Go HTTP framework built from scratch with routing, middleware chaining, and production-style utilities.",
     details:
@@ -69,7 +70,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "league-of-coders",
     kind: "project",
     title: "League of Coders",
-    icon: "🎮",
+    icon: "game-controller",
     summary:
       "A real-time 1v1 coding platform with matchmaking, code execution, and competitive gameplay.",
     details:
@@ -81,7 +82,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "finflow-dashboard",
     kind: "project",
     title: "FinFlow Dashboard",
-    icon: "💰",
+    icon: "chart-pie",
     summary:
       "A responsive finance dashboard with analytics, transaction management, and data visualization.",
     details:
@@ -95,7 +96,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "super-tic-tac-toe",
     kind: "project",
     title: "Super Tic Tac Toe",
-    icon: "⭕",
+    icon: "grid-nine",
     summary:
       "A browser-based Super Tic Tac Toe game embedded directly into the portfolio as a live web view.",
     details:
@@ -109,7 +110,7 @@ export const desktopWindows: DesktopWindow[] = [
     id: "contact",
     kind: "contact",
     title: "Contact",
-    icon: "✉️",
+    icon: "envelope",
     summary:
       "Full stack developer open to full-time roles, freelance projects, and collaborations.",
     details:
